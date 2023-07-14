@@ -16,7 +16,7 @@ def test_users_list_page(page):
     if response_json != '':
         with allure.step(f'В ответе есть page = {page}'):
             assert 'page' in response_json
-            assert response.json()['page'] == page
+            assert response_json['page'] == page
 
 
 @pytest.mark.parametrize('page',[1, 2])
@@ -32,7 +32,7 @@ def test_users_list_data_count(page):
     if response_json != '':
         with allure.step(f'Количество пользователей в списке <= 6'):
             assert 'data' in response_json
-            assert len(response.json()['data']) <= 6
+            assert len(response_json['data']) <= 6
 
 
 @allure.feature('API: get user list')

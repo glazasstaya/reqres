@@ -48,7 +48,7 @@ class CustomSession(Session):
         status = response.status_code
 
         with allure.step(f'{method} {url}'):
-            params_attach_body = f' *args, *kwargs parametrs: {args} {kwargs}'
+            params_attach_body = f' *args, **kwargs parametrs: {args} {kwargs}'
             allure.attach(body=params_attach_body, name='params', attachment_type=AttachmentType.TEXT, extension='txt')
             curl_attach_body = f'Код ответа: {status}, {curl}'
             allure.attach(body=curl_attach_body, name='curl', attachment_type=AttachmentType.TEXT, extension='txt')

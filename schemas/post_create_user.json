@@ -1,0 +1,21 @@
+{
+    "type": "object",
+    "required": [
+        "id",
+        "createdAt"
+    ],
+    "properties": {
+        "name": {
+            "type": "string"
+        },
+        "job": {
+            "type": "string"
+        },
+        "id": {
+            "type": "string"
+        },
+        "createdAt": {
+            "type": "string"
+        }
+    }
+}
