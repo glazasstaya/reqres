@@ -44,14 +44,14 @@ class CustomSession(Session):
         response = super(CustomSession, self).request(method = method, url = self.base_url + url, *args, **kwargs)
         print(args, kwargs)
         curl = to_curl(response.request)
-        logging.info(curl)
         status = response.status_code
+        status_curl = f'Код ответа: {status}, {curl}'
+        logging.info(status_curl)
 
         with allure.step(f'{method} {url}'):
             params_attach_body = f' *args, **kwargs parametrs: {args} {kwargs}'
             allure.attach(body=params_attach_body, name='params', attachment_type=AttachmentType.TEXT, extension='txt')
-            curl_attach_body = f'Код ответа: {status}, {curl}'
-            allure.attach(body=curl_attach_body, name='curl', attachment_type=AttachmentType.TEXT, extension='txt')
+            allure.attach(body=status_curl, name='curl', attachment_type=AttachmentType.TEXT, extension='txt')
             try:
                 allure.attach(
                     body=json.dumps(response.json(), ensure_ascii=False, indent=2),
