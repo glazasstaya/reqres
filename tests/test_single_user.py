@@ -1,6 +1,6 @@
 import allure
 import pytest
-from helper import load_json_schema, reqres_session, reqres_responce
+from model.utils.helper import load_json_schema, reqres_session, reqres_responce
 
 
 @pytest.mark.parametrize('user_id',[1, 2])

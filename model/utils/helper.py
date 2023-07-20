@@ -7,10 +7,11 @@ from allure_commons.types import AttachmentType
 from requests import Session, Response
 from curlify import to_curl
 from jsonschema import validate
+from datetime import datetime
 
 
 def load_json_schema(file_name):
-    schema_path = os.path.join(os.path.dirname(__file__), 'schemas', file_name)
+    schema_path = os.path.join(os.path.dirname(__file__), '../schemas', file_name)
     with open(schema_path) as schema:
         return json.loads(schema.read())
 
@@ -31,7 +32,7 @@ class ReqresResponce():
         try:
             response_json = responce_content.json()
         except json.JSONDecodeError:
-            print('Ответ не в json формате')
+            print('Ответ не в json формате или пустой')
         return response_json
 
 
@@ -42,25 +43,29 @@ class CustomSession(Session):
 
     def request(self, method, url, *args, **kwargs) -> Response:
         response = super(CustomSession, self).request(method = method, url = self.base_url + url, *args, **kwargs)
-        print(args, kwargs)
-        curl = to_curl(response.request)
         status = response.status_code
-        status_curl = f'Код ответа: {status}, {curl}'
-        logging.info(status_curl)
+        curl = to_curl(response.request)
+        date_time = datetime.now()
+
+        logging.info(date_time)
+        logging.info(f'Код ответа: {status}')
+        logging.info(curl)
 
         with allure.step(f'{method} {url}'):
-            params_attach_body = f' *args, **kwargs parametrs: {args} {kwargs}'
-            allure.attach(body=params_attach_body, name='params', attachment_type=AttachmentType.TEXT, extension='txt')
-            allure.attach(body=status_curl, name='curl', attachment_type=AttachmentType.TEXT, extension='txt')
+            allure.attach(body=f'Время запроса: {date_time}. Код ответа: {status} {curl}. Переданы параметры *args, **kwargs: {args} {kwargs}',
+                          name='info',
+                          attachment_type=AttachmentType.TEXT,
+                          extension='txt')
             try:
-                allure.attach(
-                    body=json.dumps(response.json(), ensure_ascii=False, indent=2),
-                    name='json',
-                    attachment_type=AttachmentType.JSON,
-                    extension='json'
-                )
+                allure.attach(body=json.dumps(response.json(), ensure_ascii=False, indent=2),
+                              name='response json',
+                              attachment_type=AttachmentType.JSON,
+                              extension='json')
             except json.JSONDecodeError:
-                allure.attach(body=response.text, name='text', attachment_type=AttachmentType.TEXT, extension='txt')
+                allure.attach(body=response.text,
+                              name='response text',
+                              attachment_type=AttachmentType.TEXT,
+                              extension='txt')
 
             return response
 
