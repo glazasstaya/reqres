@@ -1,4 +1,4 @@
-pytest
-jsonschema
-allure-pytest
-curlify
+pytest == 7.3.1
+jsonschema == 4.17.3
+allure-pytest == 2.13.2
+curlify == 2.2.1
